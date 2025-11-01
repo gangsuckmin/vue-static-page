@@ -1,70 +1,61 @@
 <template>
-  <div class="page">
-    <Lantern v-for="n in 6" :key="n" :delay="n * 1.2" color="var(--red)" :left="(n*12)%88" />
-    <Lantern v-for="n in 6" :key="'b'+n" :delay="n * 1.1" color="var(--blue)" :left="(n*9)%80" reverse />
-  </div>
+  <main class="page">
+    <h1 class="title">🌕 추석 잘 보내세요!</h1>
+    <p class="subtitle">붉은 기쁨과 푸른 평안이 함께 하시길 바랍니다.</p>
+
+    <div class="lantern red"></div>
+    <div class="lantern blue"></div>
+  </main>
 </template>
 
 <script setup lang="ts">
-import { computed, defineComponent } from 'vue'
-
-// Local Lantern component used in the template above
-const Lantern = defineComponent({
-  name: 'Lantern',
-  props: {
-    delay: { type: Number, default: 0 },
-    left: { type: Number, default: 50 },
-    color: { type: String, default: 'var(--red)' },
-    reverse: { type: Boolean, default: false }
-  },
-  setup(props) {
-    const lanternStyle = computed(() => ({
-      '--delay': `${props.delay}s`,
-      left: `${props.left}%`,
-      '--lantern-color': props.color as string
-    }) as Record<string, string>)
-
-    return { lanternStyle, reverse: props.reverse }
-  },
-  template: `
-    <div class='lantern' :style="lanternStyle" :class="{ reverse }">
-      <div class='lantern__body'>
-        <div class='lantern__top'></div>
-        <div class='lantern__paper'></div>
-        <div class='lantern__bottom'></div>
-      </div>
-      <div class='lantern__string'></div>
-    </div>
-  `
-})
+// 간단한 표시용 Vue 컴포넌트, 추가 JS 필요 없음
 </script>
 
 <style scoped>
-:root {
-  --red: #c1121f;
-  --blue: #1e40ff;
-  --ease: cubic-bezier(.25,.7,.2,1);
-  --lantern-color: var(--red);
-  --delay: 0s;
-}
-
 .page {
-  position: relative;
-  min-height: 100vh;
-  background: radial-gradient(800px at 80% -10%, #1b2450, #0b1020);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: radial-gradient(circle at 50% 20%, #1b2450, #0b1020);
+  color: #fff;
+  overflow: hidden;
+}
+.title {
+  font-size: 2.4rem;
+  margin-bottom: 0.5rem;
+  color: #ffd966;
+}
+.subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
 }
 
 .lantern {
   position: absolute;
-  bottom: -10px;
-  animation: float 16s var(--ease) infinite;
-  animation-delay: var(--delay);
+  bottom: -60px;
+  width: 40px;
+  height: 60px;
+  border-radius: 8px;
+  animation: float 8s ease-in-out infinite;
 }
-.lantern__body { width: 36px; height: 54px; background: var(--lantern-color); }
+.lantern.red {
+  background: linear-gradient(180deg, #ff4b4b, #a60000);
+  left: 30%;
+  animation-delay: 0s;
+}
+.lantern.blue {
+  background: linear-gradient(180deg, #3b82f6, #1e40ff);
+  left: 65%;
+  animation-delay: 2s;
+}
 
 @keyframes float {
   0% { transform: translateY(0); opacity: 0; }
-  50% { transform: translateY(-50vh); opacity: 1; }
-  100% { transform: translateY(-100vh); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translateY(-60vh); }
+  100% { transform: translateY(-120vh); opacity: 0; }
 }
 </style>
