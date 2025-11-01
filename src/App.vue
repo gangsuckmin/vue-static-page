@@ -115,17 +115,6 @@ function removeWish(id: string) {
 </script>
 
 <style scoped>
-/* ===== 색상 토큰 ===== */
-:root {
-  --red-500: #e11d48;   /* 메인 레드 */
-  --red-600: #be123c;
-  --blue-500: #2563eb;  /* 메인 블루 */
-  --blue-600: #1d4ed8;
-  --ink: #0b1020;
-  --paper: #f8fafc;
-  --muted: #e5e7eb;
-  --shadow: rgba(0,0,0,.25);
-}
 
 /* ===== 레이아웃 ===== */
 .page {
@@ -335,4 +324,16 @@ function removeWish(id: string) {
 
 /* 접근성 */
 :focus-visible { outline: 3px solid #fff; outline-offset: 2px; border-radius: 8px; }
+</style>
+<style>
+:root {
+  --red-500: #e11d48;   /* 메인 레드 */
+  --red-600: #be123c;
+  --blue-500: #2563eb;  /* 메인 블루 */
+  --blue-600: #1d4ed8;
+  --ink: #0b1020;
+  --paper: #f8fafc;
+  --muted: #e5e7eb;
+  --shadow: rgba(0,0,0,.25);
+}
 </style>
