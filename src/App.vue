@@ -12,18 +12,42 @@
         <span class="half red"></span>
         <span class="half blue"></span>
       </div>
-      <h1 class="title">풍요로운 한가위</h1>
-      <p class="subtitle">붉은 기쁨, 푸른 평안이 가득하길</p>
+      <h1 class="title">엄마 ❤ 아빠</h1>
+      <p class="subtitle">결혼기념일을 진심으로 축하드려요</p>
     </header>
+
+    <!-- 가운데 영상 -->
+    <section class="video-section" aria-label="결혼기념일 영상">
+      <div class="video-card">
+        <h2 class="video-title">우리 가족의 하루</h2>
+        <p class="video-sub">엄마 아빠, 결혼기념일 축하드려요 💕</p>
+
+        <!--
+          ✅ 사용법
+          1) `public/anniversary.mp4` 파일을 넣으면 아래 src="/anniversary.mp4" 로 바로 재생됩니다.
+          2) 포스터 이미지는 `public/anniversary.jpg` 처럼 넣고 poster를 바꿔주세요.
+        -->
+        <video
+          class="video"
+          src="/anniversary.mp4"
+          poster="/anniversary.jpg"
+          controls
+          playsinline
+          preload="metadata"
+        ></video>
+
+        <p class="video-hint">(영상이 안 나오면 public 폴더에 파일이 있는지 확인해 주세요.)</p>
+      </div>
+    </section>
 
     <!-- 컨텐츠 -->
     <section class="cards">
       <article class="card">
-        <h2 class="card-title">송편 한 접시</h2>
+        <h2 class="card-title">고마운 마음</h2>
         <p class="card-text">
-          둥근 달처럼 마음도 둥글게—가족과 나누는 정이 가장 큰 선물이지요.
+          늘 우리를 위해 애써주셔서 고마워요. 두 분의 사랑 덕분에 오늘의 우리가 있어요.
         </p>
-        <div class="ricecakes" aria-hidden="true">
+        <div class="chips" aria-hidden="true">
           <span class="rc rc-red"></span>
           <span class="rc rc-blue"></span>
           <span class="rc rc-red"></span>
@@ -32,9 +56,9 @@
       </article>
 
       <article class="card">
-        <h2 class="card-title">붉고 푸른 등(燈)</h2>
+        <h2 class="card-title">오늘도 반짝반짝</h2>
         <p class="card-text">
-          희망을 담은 연등이 밤하늘을 수놓습니다. 살짝 흔들리는 불빛을 감상해 보세요.
+          두 분의 앞날에 건강과 행복이 가득하길. 작은 빛들이 모여 더 환하게 비추길 바라요.
         </p>
         <div class="lanterns" aria-hidden="true">
           <div class="lantern lantern-red">
@@ -50,13 +74,13 @@
       </article>
 
       <article class="card wish-card">
-        <h2 class="card-title">소원 빌기</h2>
+        <h2 class="card-title">우리의 한마디</h2>
         <form class="wish-form" @submit.prevent="addWish">
           <input
               v-model.trim="wishInput"
               class="wish-input"
               type="text"
-              placeholder="보름달에게 빌 소원을 적어 보세요"
+              placeholder="엄마 아빠께 남길 한마디를 적어 보세요"
               maxlength="60"
               aria-label="소원 입력"
           />
@@ -70,13 +94,13 @@
             <button class="remove" @click="removeWish(w.id)" aria-label="소원 삭제">×</button>
           </li>
         </ul>
-        <p v-else class="empty">첫 소원을 적어보세요. 🌕</p>
+        <p v-else class="empty">첫 메시지를 남겨보세요. 💌</p>
       </article>
     </section>
 
     <!-- 푸터 -->
     <footer class="footer">
-      <small>© {{ year }} Chuseok with <span class="heart">❤</span> Red & Blue</small>
+      <small>© {{ year }} Happy Anniversary with <span class="heart">❤</span></small>
     </footer>
   </main>
 </template>
@@ -87,7 +111,7 @@ import { onMounted, ref, watch } from 'vue'
 type Wish = { id: string; text: string }
 const wishInput = ref('')
 const wishes = ref<Wish[]>([])
-const STORAGE_KEY = 'chuseok-wishes'
+const STORAGE_KEY = 'anniversary-messages'
 const year = new Date().getFullYear()
 
 onMounted(() => {
@@ -178,33 +202,52 @@ function removeWish(id: string) {
 /* 헤더 */
 .header {
   text-align: center;
-  padding: 6rem 1.25rem 2rem;
-}
-.title {
-  margin: .75rem 0 0;
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 800;
-  letter-spacing: .02em;
-  text-shadow: 0 6px 16px var(--shadow);
-}
-.subtitle {
-  opacity: .95;
-  margin-top: .25rem;
+  padding: 6rem 1.25rem 1.25rem;
 }
 
-/* 태극 포인트 */
-.taegeuk {
-  display: inline-grid;
-  grid-template-columns: 1fr 1fr;
-  width: clamp(64px, 14vw, 96px);
-  aspect-ratio: 1/1;
-  border-radius: 999px;
-  overflow: hidden;
-  box-shadow: 0 8px 24px var(--shadow);
+/* ===== 가운데 영상 섹션 ===== */
+.video-section {
+  display: grid;
+  place-items: center;
+  padding: 1rem clamp(1rem, 4vw, 2rem) 1.25rem;
 }
-.half { display: block; }
-.half.red  { background: radial-gradient(circle at 70% 30%, #ff7aa2, var(--red-500)); }
-.half.blue { background: radial-gradient(circle at 30% 70%, #7aa7ff, var(--blue-500)); }
+
+.video-card {
+  width: min(980px, 100%);
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 18px;
+  padding: 1.25rem;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 12px 34px rgba(0,0,0,.28);
+}
+
+.video-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: .01em;
+}
+
+.video-sub {
+  margin: .25rem 0 1rem;
+  opacity: .95;
+}
+
+.video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  background: rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 10px 20px rgba(0,0,0,.22);
+}
+
+.video-hint {
+  margin: .75rem 0 0;
+  opacity: .85;
+  font-size: .9rem;
+}
 
 /* 카드 그리드 */
 .cards {
@@ -236,7 +279,7 @@ function removeWish(id: string) {
 }
 
 /* 송편 데코 */
-.ricecakes {
+.chips {
   display: flex; gap: .5rem; margin-top: .75rem;
 }
 .rc {
