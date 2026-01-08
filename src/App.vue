@@ -1,382 +1,335 @@
 <template>
   <main class="page">
-    <!-- 배경 장식 -->
-    <div class="bg-gradient" aria-hidden="true"></div>
-    <div class="moon" aria-hidden="true"></div>
-    <div class="cloud c1" aria-hidden="true"></div>
-    <div class="cloud c2" aria-hidden="true"></div>
+    <!-- Background: paper + eternal glow -->
+    <div class="bg" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="glow g1" aria-hidden="true"></div>
+    <div class="glow g2" aria-hidden="true"></div>
 
-    <!-- 헤더 -->
-    <header class="header">
-      <div class="taegeuk" aria-hidden="true">
-        <span class="half red"></span>
-        <span class="half blue"></span>
+    <header class="hero" aria-label="결혼기념일 인사">
+      <div class="container">
+        <p class="eyebrow">Always on the same side</p>
+        <p class="eyebrow">1995.01.08</p>
+        <h1 class="title">강신재 <span class="heart" aria-hidden="true">♥</span> 임정숙</h1><br>
+        <p class="eyebrow">그날의 마음을 간직한 채, 늘 같은 편으로</p>
+
+
+        <div class="meta" role="group" aria-label="기념일 정보">
+          <div class="pill">
+            <span class="k">오늘</span>
+            <span class="v"><span class="year">{{ todayText }}</span></span>
+          </div>
+          <div class="pill">
+            <span class="k">함께한지</span>
+            <span class="v"><span class="year">{{ yearsTogether }}년째</span></span>
+          </div>
+        </div>
       </div>
-      <h1 class="title">엄마 ❤ 아빠</h1>
-      <p class="subtitle">결혼기념일을 진심으로 축하드려요</p>
     </header>
 
-    <!-- 가운데 영상 -->
-    <section class="video-section" aria-label="결혼기념일 영상">
-      <div class="video-card">
-        <h2 class="video-title">우리 가족의 하루</h2>
-        <p class="video-sub">엄마 아빠, 결혼기념일 축하드려요 💕</p>
-
-        <!--
-          ✅ 사용법
-          1) `public/anniversary.mp4` 파일을 넣으면 아래 src="/anniversary.mp4" 로 바로 재생됩니다.
-          2) 포스터 이미지는 `public/anniversary.jpg` 처럼 넣고 poster를 바꿔주세요.
-        -->
-        <video
-          class="video"
-          src="/anniversary.mp4"
-          poster="/anniversary.jpg"
-          controls
-          playsinline
-          preload="metadata"
-        ></video>
-
-        <p class="video-hint">(영상이 안 나오면 public 폴더에 파일이 있는지 확인해 주세요.)</p>
+    <!-- Center video -->
+    <section class="video-section" aria-label="기념일 영상">
+      <div class="container">
+          <div class="video-wrap">
+            <video
+              class="video"
+              :src="currentVideoSrc"
+              :poster="posterSrc || undefined"
+              controls
+              playsinline
+              preload="metadata"
+              controlsList="nodownload"
+              @ended="onEnded"
+              ref="videoEl"
+            ></video>
+          </div>
       </div>
     </section>
 
-    <!-- 컨텐츠 -->
-    <section class="cards">
-      <article class="card">
-        <h2 class="card-title">고마운 마음</h2>
-        <p class="card-text">
-          늘 우리를 위해 애써주셔서 고마워요. 두 분의 사랑 덕분에 오늘의 우리가 있어요.
-        </p>
-        <div class="chips" aria-hidden="true">
-          <span class="rc rc-red"></span>
-          <span class="rc rc-blue"></span>
-          <span class="rc rc-red"></span>
-          <span class="rc rc-blue"></span>
-        </div>
-      </article>
-
-      <article class="card">
-        <h2 class="card-title">오늘도 반짝반짝</h2>
-        <p class="card-text">
-          두 분의 앞날에 건강과 행복이 가득하길. 작은 빛들이 모여 더 환하게 비추길 바라요.
-        </p>
-        <div class="lanterns" aria-hidden="true">
-          <div class="lantern lantern-red">
-            <div class="string"></div><div class="body"></div><div class="tassel"></div>
-          </div>
-          <div class="lantern lantern-blue">
-            <div class="string"></div><div class="body"></div><div class="tassel"></div>
-          </div>
-          <div class="lantern lantern-red">
-            <div class="string"></div><div class="body"></div><div class="tassel"></div>
-          </div>
-        </div>
-      </article>
-
-      <article class="card wish-card">
-        <h2 class="card-title">우리의 한마디</h2>
-        <form class="wish-form" @submit.prevent="addWish">
-          <input
-              v-model.trim="wishInput"
-              class="wish-input"
-              type="text"
-              placeholder="엄마 아빠께 남길 한마디를 적어 보세요"
-              maxlength="60"
-              aria-label="소원 입력"
-          />
-          <button class="wish-btn" type="submit" :disabled="!wishInput">빌기</button>
-        </form>
-
-        <ul class="wish-list" v-if="wishes.length">
-          <li v-for="(w, i) in wishes" :key="w.id" class="wish-item">
-            <span class="dot" :class="i % 2 ? 'blue' : 'red'"></span>
-            <span class="wish-text">{{ w.text }}</span>
-            <button class="remove" @click="removeWish(w.id)" aria-label="소원 삭제">×</button>
-          </li>
-        </ul>
-        <p v-else class="empty">첫 메시지를 남겨보세요. 💌</p>
-      </article>
-    </section>
-
-    <!-- 푸터 -->
-    <footer class="footer">
-      <small>© {{ year }} Happy Anniversary with <span class="heart">❤</span></small>
+    <footer class="footer" aria-label="마무리">
+      <p class="thanks">결혼기념일을 축하드립니다</p>
+      <small>© {{ new Date().getFullYear() }} Happy Anniversary</small>
     </footer>
   </main>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 
-type Wish = { id: string; text: string }
-const wishInput = ref('')
-const wishes = ref<Wish[]>([])
-const STORAGE_KEY = 'anniversary-messages'
-const year = new Date().getFullYear()
+// Vite가 base 경로(/vue-static-page/ 같은)를 쓰는 경우가 있어서 BASE_URL을 붙여줍니다.
+// public/anniversary.mp4, public/anniversary.jpg 를 두면 아래 경로로 접근됩니다.
+const base = import.meta.env.BASE_URL
+const playlist = [`${base}anniversary2.mp4`, `${base}anniversary.mp4`]
+const currentIndex = ref(0)
+const currentVideoSrc = computed(() => playlist[currentIndex.value] ?? playlist[0])
+const videoEl = ref<HTMLVideoElement | null>(null)
 
-onMounted(() => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) wishes.value = JSON.parse(raw) as Wish[]
-  } catch { /* ignore */ }
+function onEnded() {
+  // 다음 영상으로 넘어가고, 재생을 이어갑니다.
+  currentIndex.value = (currentIndex.value + 1) % playlist.length
+  requestAnimationFrame(() => {
+    videoEl.value?.play().catch(() => {
+      // 모바일 정책상 자동 재생이 막히면 사용자가 재생 버튼을 누르면 됩니다.
+    })
+  })
+}
+
+const posterSrc = `${base}anniversary.jpg`
+
+// ✅ 여기 날짜만 원하는 결혼 날짜로 바꿔주면 'N년째'가 정확해져요.
+// 예) 1998-10-11
+const WEDDING_DATE = '1995-01-08'
+
+const today = new Date()
+
+const todayText = computed(() => {
+  // 모바일에서 보기 좋게: 2026. 01. 08.
+  const y = today.getFullYear()
+  const m = String(today.getMonth() + 1).padStart(2, '0')
+  const d = String(today.getDate()).padStart(2, '0')
+  return `${y}. ${m}. ${d}.`
 })
 
-watch(wishes, (v) => {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(v))
-  } catch { /* ignore */ }
-}, { deep: true })
-
-function addWish() {
-  if (!wishInput.value) return
-  wishes.value.unshift({ id: crypto.randomUUID(), text: wishInput.value })
-  wishInput.value = ''
-}
-
-function removeWish(id: string) {
-  wishes.value = wishes.value.filter(w => w.id !== id)
-}
+const yearsTogether = computed(() => {
+  const start = new Date(WEDDING_DATE)
+  if (Number.isNaN(start.getTime())) return 0
+  let years = today.getFullYear() - start.getFullYear()
+  const hasHadAnniversaryThisYear =
+    today.getMonth() > start.getMonth() ||
+    (today.getMonth() === start.getMonth() && today.getDate() >= start.getDate())
+  if (!hasHadAnniversaryThisYear) years -= 1
+  // '함께한 0년째' 방지
+  return Math.max(1, years + 1)
+})
 </script>
 
 <style scoped>
-
-/* ===== 레이아웃 ===== */
+/* ===== 모바일 우선: 통일감(색/폰트/간격) + 보기 편한 레이아웃 ===== */
 .page {
   position: relative;
   min-height: 100dvh;
-  color: var(--paper);
+  color: var(--ink);
   overflow-x: hidden;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
 }
 
-/* 배경: 레드→블루 그라디언트 */
-.bg-gradient {
+.container {
+  width: min(560px, 100%);
+  margin: 0 auto;
+  padding-inline: 1rem;
+}
+
+/* Background */
+.bg {
   position: fixed;
   inset: 0;
-  background: radial-gradient(80vw 80vh at 80% 10%, var(--blue-600), transparent 60%),
-  radial-gradient(80vw 80vh at 20% 90%, var(--red-600), transparent 60%),
-  linear-gradient(160deg, var(--red-500), var(--blue-500));
+  background:
+    radial-gradient(1100px 700px at 18% 12%, rgba(255, 213, 170, .45), transparent 55%),
+    radial-gradient(900px 600px at 92% 22%, rgba(190, 210, 255, .50), transparent 55%),
+    linear-gradient(180deg, #fff7f2 0%, #ffffff 45%, #f6f9ff 100%);
   z-index: -3;
 }
 
-/* 보름달 */
-.moon {
+.grain {
   position: fixed;
-  top: 8vh; right: 10vw;
-  width: min(22rem, 35vw);
-  aspect-ratio: 1/1;
-  border-radius: 50%;
-  background:
-      radial-gradient(circle at 60% 40%, rgba(255,255,255,.9), rgba(255,255,255,.75) 40%, rgba(255,255,255,.0) 70%),
-      #ffffff;
-  box-shadow:
-      0 0 60px 20px rgba(255,255,255,.35),
-      0 0 120px 40px rgba(37, 99, 235, .25);
-  animation: moonrise 1.8s ease-out both;
+  inset: -20px;
   z-index: -2;
-}
-@keyframes moonrise {
-  from { transform: translateY(30px); opacity: .0; }
-  to   { transform: translateY(0); opacity: 1; }
+  opacity: .08;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.04) 0, rgba(0,0,0,.04) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.03) 0, rgba(0,0,0,.03) 1px, transparent 1px, transparent 4px);
+  mix-blend-mode: multiply;
+  pointer-events: none;
 }
 
-/* 구름 */
-.cloud {
+.glow {
   position: fixed;
-  height: 16vmin;
-  width: 40vmin;
-  filter: blur(10px);
-  background: linear-gradient(90deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
+  width: 54vmin;
+  height: 54vmin;
   border-radius: 999px;
+  filter: blur(36px);
+  opacity: .50;
   z-index: -1;
-  opacity: .7;
 }
-.c1 { top: 22vh; left: -20vmin; animation: drift 30s linear infinite; }
-.c2 { top: 55vh; right: -25vmin; animation: drift 40s linear infinite reverse; }
-@keyframes drift {
-  from { transform: translateX(0); }
-  to   { transform: translateX(120vmin); }
-}
+.glow.g1 { top: 10vh; left: -14vmin; background: rgba(255, 162, 132, .45); }
+.glow.g2 { bottom: 10vh; right: -16vmin; background: rgba(120, 170, 255, .38); }
 
-/* 헤더 */
-.header {
+/* Hero */
+.hero {
+  padding: calc(2.1rem + env(safe-area-inset-top)) 0 1.0rem;
   text-align: center;
-  padding: 6rem 1.25rem 1.25rem;
 }
 
-/* ===== 가운데 영상 섹션 ===== */
-.video-section {
-  display: grid;
-  place-items: center;
-  padding: 1rem clamp(1rem, 4vw, 2rem) 1.25rem;
+.eyebrow {
+  margin: 0 0 .55rem;
+  font-size: .78rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(15, 23, 42, .55);
 }
 
-.video-card {
-  width: min(980px, 100%);
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 18px;
-  padding: 1.25rem;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 12px 34px rgba(0,0,0,.28);
-}
-
-.video-title {
+.title {
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: .01em;
+  font-size: clamp(2.05rem, 7vw, 3.05rem);
+  line-height: 1.08;
+  font-weight: 850;
+  font-family: ui-serif, Georgia, "Times New Roman", Times, serif;
+  color: rgba(15, 23, 42, .92);
 }
 
-.video-sub {
-  margin: .25rem 0 1rem;
-  opacity: .95;
+.heart {
+  display: inline-block;
+  margin: 0 .25rem;
+  font-size: .75em;
+  vertical-align: middle;
+  color: rgba(255, 120, 150, .75);
+}
+
+.subtitle {
+  margin: .55rem auto 0;
+  max-width: 30ch;
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: rgba(15, 23, 42, .70);
+}
+
+.meta {
+  display: flex;
+  justify-content: center;
+  gap: .55rem;
+  flex-wrap: wrap;
+  margin-top: .95rem;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .55rem .75rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,.75);
+  border: 1px solid rgba(15, 23, 42, .10);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, .08);
+  backdrop-filter: blur(6px);
+}
+
+.pill .k {
+  font-size: .85rem;
+  color: rgba(15, 23, 42, .55);
+}
+
+.pill .v {
+  font-weight: 850;
+  color: rgba(15, 23, 42, .82);
+}
+.pill .year {
+  font-size: .9em; /* 숫자/년도만 살짝 작게 */
+  font-weight: 800;
+}
+
+/* Video section */
+.video-section {
+  padding: .25rem 0 1.1rem;
+}
+
+.card {
+  background: rgba(255,255,255,.78);
+  border: 1px solid rgba(17, 24, 39, .10);
+  border-radius: 20px;
+  padding: 1.05rem;
+  box-shadow: 0 18px 52px rgba(15, 23, 42, .10);
+  backdrop-filter: blur(6px);
+}
+
+.card-head {
+  margin-bottom: .9rem;
+  text-align: left;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.12rem;
+  font-weight: 850;
+  color: rgba(15, 23, 42, .90);
+}
+
+.card-sub {
+  margin: .35rem 0 0;
+  font-size: .95rem;
+  line-height: 1.45;
+  color: rgba(15, 23, 42, .62);
+}
+
+.video-wrap {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(15, 23, 42, .12);
+  box-shadow: 0 12px 22px rgba(15, 23, 42, .12);
+  /* 좌우 레터박스(세로영상)용 '하늘+구름' 톤 */
+  background:
+    radial-gradient(120% 100% at 50% 18%, rgba(235, 247, 255, .98), rgba(255, 255, 255, .96) 46%, rgba(230, 242, 255, .92) 74%),
+    linear-gradient(180deg, #eaf4ff 0%, #ffffff 55%, #e6f0ff 100%);
+  width: 100%;
+  aspect-ratio: 16 / 9;
 }
 
 .video {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 14px;
-  background: rgba(0,0,0,.25);
-  border: 1px solid rgba(255,255,255,.18);
-  box-shadow: 0 10px 20px rgba(0,0,0,.22);
+  height: 100%;
+  display: block;
+  object-fit: contain;
 }
 
-.video-hint {
-  margin: .75rem 0 0;
-  opacity: .85;
-  font-size: .9rem;
+/* Footer */
+.footer {
+  padding: .8rem 0 calc(1.35rem + env(safe-area-inset-bottom));
+  text-align: center;
+  color: rgba(15, 23, 42, .55);
 }
 
-/* 카드 그리드 */
-.cards {
-  display: grid;
-  gap: 1.25rem;
-  grid-template-columns: repeat(12, 1fr);
-  padding: 1rem clamp(1rem, 4vw, 2rem) 3rem;
+.thanks {
+  margin: 0;
+  font-size: .98rem;
+  line-height: 1.5;
+  color: rgba(15, 23, 42, .62);
 }
-.card {
-  grid-column: span 12;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 16px;
-  padding: 1rem;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+
+.footer small {
+  display: block;
+  margin-top: .55rem;
 }
-.card-title {
-  font-weight: 700;
-  margin: .25rem 0 .5rem;
-  font-size: 1.2rem;
+
+/* Focus */
+:focus-visible {
+  outline: 3px solid rgba(120, 170, 255, .85);
+  outline-offset: 2px;
+  border-radius: 10px;
 }
-.card-text { opacity: .95; }
 
 @media (min-width: 900px) {
-  .card:nth-child(1) { grid-column: span 4; }
-  .card:nth-child(2) { grid-column: span 4; }
-  .wish-card       { grid-column: span 4; }
+  .container { width: min(860px, 100%); }
+  .hero { padding: 3.0rem 0 1.2rem; }
+  .subtitle { max-width: 60ch; }
+  .card { padding: 1.2rem; }
+  .card-title { font-size: 1.18rem; }
 }
-
-/* 송편 데코 */
-.chips {
-  display: flex; gap: .5rem; margin-top: .75rem;
-}
-.rc {
-  width: 36px; height: 24px; border-radius: 18px 18px 6px 6px;
-  box-shadow: inset 0 -3px 0 rgba(0,0,0,.12), 0 6px 12px rgba(0,0,0,.2);
-}
-.rc-red  { background: linear-gradient(#ff89a8, var(--red-500)); }
-.rc-blue { background: linear-gradient(#8fb0ff, var(--blue-500)); }
-
-/* 연등 애니메이션 */
-.lanterns { display: flex; gap: 1rem; margin-top: .75rem; }
-.lantern { display: grid; place-items: center; width: 70px; }
-.lantern .string { width: 2px; height: 18px; background: rgba(255,255,255,.7); }
-.lantern .body {
-  width: 54px; height: 64px; border-radius: 12px;
-  border: 2px solid rgba(255,255,255,.65);
-  box-shadow: inset 0 0 18px rgba(255,255,255,.6), 0 10px 18px rgba(0,0,0,.25);
-  animation: sway 3.6s ease-in-out infinite;
-}
-.lantern .tassel { width: 6px; height: 18px; background: rgba(255,255,255,.8); margin-top: 2px; border-radius: 0 0 3px 3px; }
-.lantern-red .body  { background: linear-gradient(180deg, #ffb3c4, var(--red-500)); }
-.lantern-blue .body { background: linear-gradient(180deg, #b7ccff, var(--blue-500)); }
-.lantern:nth-child(2) .body { animation-delay: .6s; }
-.lantern:nth-child(3) .body { animation-delay: 1.2s; }
-@keyframes sway {
-  0%, 100% { transform: rotate(-4deg) translateY(0); }
-  50%      { transform: rotate(4deg) translateY(2px); }
-}
-
-/* 소원 폼 */
-.wish-form { display: flex; gap: .5rem; margin-top: .5rem; }
-.wish-input {
-  flex: 1;
-  padding: .7rem .9rem;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,.35);
-  background: rgba(255,255,255,.15);
-  color: #fff;
-  outline: none;
-}
-.wish-input::placeholder { color: rgba(255,255,255,.75); }
-.wish-btn {
-  padding: .7rem 1rem;
-  border-radius: 10px;
-  border: none;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--red-500), var(--blue-500));
-  color: white;
-  box-shadow: 0 8px 16px rgba(0,0,0,.25);
-  cursor: pointer;
-}
-.wish-btn:disabled { opacity: .6; cursor: not-allowed; }
-
-.wish-list { list-style: none; margin: .75rem 0 0; padding: 0; display: grid; gap: .5rem; }
-.wish-item {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: .5rem;
-  padding: .6rem .7rem;
-  border-radius: 10px;
-  background: rgba(255,255,255,.1);
-  border: 1px solid rgba(255,255,255,.18);
-}
-.dot {
-  width: .75rem; height: .75rem; border-radius: 999px; display: inline-block;
-  box-shadow: 0 0 0 3px rgba(255,255,255,.15);
-}
-.dot.red  { background: var(--red-500); }
-.dot.blue { background: var(--blue-500); }
-.wish-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.remove {
-  background: transparent; border: none; color: #fff; font-size: 1.1rem; cursor: pointer;
-  line-height: 1; padding: .25rem;
-}
-.empty { opacity: .9; margin-top: .75rem; }
-
-/* 푸터 */
-.footer {
-  text-align: center;
-  padding: 1.5rem 1rem 2.5rem;
-  color: rgba(255,255,255,.9);
-}
-.heart { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,.6); }
-
-/* 접근성 */
-:focus-visible { outline: 3px solid #fff; outline-offset: 2px; border-radius: 8px; }
 </style>
+
 <style>
 :root {
-  --red-500: #e11d48;   /* 메인 레드 */
-  --red-600: #be123c;
-  --blue-500: #2563eb;  /* 메인 블루 */
-  --blue-600: #1d4ed8;
-  --ink: #0b1020;
-  --paper: #f8fafc;
-  --muted: #e5e7eb;
-  --shadow: rgba(0,0,0,.25);
+  --ink: #0f172a;
+  --paper: #ffffff;
 }
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", Arial, sans-serif;
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 </style>
