@@ -269,7 +269,7 @@ const yearsTogether = computed(() => {
     radial-gradient(120% 100% at 50% 18%, rgba(235, 247, 255, .98), rgba(255, 255, 255, .96) 46%, rgba(230, 242, 255, .92) 74%),
     linear-gradient(180deg, #eaf4ff 0%, #ffffff 55%, #e6f0ff 100%);
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 11;
 }
 
 .video {
