@@ -269,9 +269,9 @@ const yearsTogether = computed(() => {
     radial-gradient(120% 100% at 50% 18%, rgba(235, 247, 255, .98), rgba(255, 255, 255, .96) 46%, rgba(230, 242, 255, .92) 74%),
     linear-gradient(180deg, #eaf4ff 0%, #ffffff 55%, #e6f0ff 100%);
   width: 100%;
-  /* 모바일에서 박스 자체를 더 크게(상하로 더 길게) */
-  aspect-ratio: 16 / 14;
-  max-height: 80vh;
+  /* 상하로 한 단계만 더 여유 있게 */
+  aspect-ratio: 16 / 15;
+  max-height: 82vh;
 }
 
 .video {
