@@ -270,7 +270,7 @@ const yearsTogether = computed(() => {
     linear-gradient(180deg, #eaf4ff 0%, #ffffff 55%, #e6f0ff 100%);
   width: 100%;
   /* 상하로 한 단계만 더 여유 있게 */
-  aspect-ratio: 16 / 15;
+  aspect-ratio: 16 / 16;
   max-height: 82vh;
 }
 
