@@ -70,11 +70,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-// Vite의 base 경로를 자동으로 적용합니다.
-// public/anniversary2.mp4
-// public/anniversary.mp4
-// public/anniversary.jpg
-// 파일을 넣어두면 됩니다.
 const base = import.meta.env.BASE_URL
 
 const playlist = [
@@ -84,22 +79,19 @@ const playlist = [
 
 const currentIndex = ref(0)
 
-const currentVideoSrc = computed(
-  () => playlist[currentIndex.value] ?? playlist[0],
-)
+const currentVideoSrc = computed(() => {
+  return playlist[currentIndex.value] ?? playlist[0]
+})
 
 const videoEl = ref<HTMLVideoElement | null>(null)
 
 function onEnded() {
-  // 다음 영상으로 넘어갑니다.
   currentIndex.value =
     (currentIndex.value + 1) % playlist.length
 
-  // 영상 변경 후 자동으로 이어서 재생합니다.
   requestAnimationFrame(() => {
     videoEl.value?.play().catch(() => {
-      // 모바일 브라우저 정책상 자동 재생이 차단될 경우
-      // 사용자가 직접 재생 버튼을 누르면 됩니다.
+      // 모바일 브라우저에서는 자동 재생이 차단될 수 있습니다.
     })
   })
 }
@@ -121,8 +113,7 @@ const todayText = computed(() => {
   return `${y}. ${m}. ${d}.`
 })
 
-// 함께한 날짜 수 계산
-// 결혼 당일을 1일째로 계산합니다.
+// 결혼 당일을 1일째로 계산
 const daysTogether = computed(() => {
   const start = new Date(`${WEDDING_DATE}T00:00:00`)
 
@@ -147,28 +138,6 @@ const daysTogether = computed(() => {
   return Math.floor(
     (currentDate - startDate) / millisecondsPerDay
   ) + 1
-})
-
-  const startDate = Date.UTC(
-    year,
-    month - 1,
-    day,
-  )
-
-  const currentDate = Date.UTC(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-  )
-
-  const diff = currentDate - startDate
-
-  const millisecondsPerDay =
-    1000 * 60 * 60 * 24
-
-  return (
-    Math.floor(diff / millisecondsPerDay) + 1
-  )
 })
 </script>
 
