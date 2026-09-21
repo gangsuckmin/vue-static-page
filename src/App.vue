@@ -124,9 +124,30 @@ const todayText = computed(() => {
 // 함께한 날짜 수 계산
 // 결혼 당일을 1일째로 계산합니다.
 const daysTogether = computed(() => {
-  const [year, month, day] = WEDDING_DATE
-    .split('-')
-    .map(Number)
+  const start = new Date(`${WEDDING_DATE}T00:00:00`)
+
+  if (Number.isNaN(start.getTime())) {
+    return 0
+  }
+
+  const startDate = Date.UTC(
+    start.getFullYear(),
+    start.getMonth(),
+    start.getDate()
+  )
+
+  const currentDate = Date.UTC(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  )
+
+  const millisecondsPerDay = 1000 * 60 * 60 * 24
+
+  return Math.floor(
+    (currentDate - startDate) / millisecondsPerDay
+  ) + 1
+})
 
   const startDate = Date.UTC(
     year,
